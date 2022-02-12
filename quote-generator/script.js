@@ -7,21 +7,18 @@ const loader = document.getElementById('loader')
 
 let apiQuotes = []
 
-// show loading
-function loading() {
+function showLoadingSpinner() {
     loader.hidden = false
     quoteContainer.hidden = true
 }
 
-// hide loading
-function complete() {
+function removeLoadingSpinner() {
     quoteContainer.hidden = false;
     loader.hidden = true;
 }
 
-// show new quote
 function newQuote() {
-    loading();
+    showLoadingSpinner();
     // Pick a random quote from apiQuotes array
     const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)]
     // check if author field is blank
@@ -30,7 +27,6 @@ function newQuote() {
     } else {
         authorText.textContent = quote.author;
     }
-
     // check quote length to determine the style
     if(quote.text.length > 40) {
         quoteText.classList.add('long-quote')
@@ -39,23 +35,22 @@ function newQuote() {
     }
     // set quote, hide loader
     quoteText.textContent = quote.text;
-    complete();
+    removeLoadingSpinner();
 }
 
 // asychronous catch request
 async function getQuotes() {
-    loading();
+    showLoadingSpinner();
     const apiUrl = 'https://type.fit/api/quotes';
     try {
         const response = await fetch(apiUrl) // only setting the response when we actually have data
         apiQuotes = await response.json();
         newQuote();
     } catch (error) {
-        // Catch Error Here
+        // catch error here
     }
 }
 
-// tweet quote
 function tweetQuote() {
     const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText.textContent} - ${authorText.textContent}`;
     window.open(twitterUrl, '_blank');
